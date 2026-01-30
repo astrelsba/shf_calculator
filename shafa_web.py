@@ -16,7 +16,7 @@ def calculate_commission(price, category):
         else:
             percent = 9
     commission = price * percent / 100
-    commission = max(30, min(400, commission))
+    commission = max(30, min(500, commission))
     return percent, commission
 
 st.markdown('<div style="font-size: 2em; font-weight: bold; user-select: none;">Калькулятор комісії SHF</div>', unsafe_allow_html=True)
@@ -49,6 +49,6 @@ if st.button("Розрахувати"):
 **Різниця для повернення: {difference:.2f} грн**
 """)
         else:
-            st.error("Введіть позитивні значення для цін")
+            st.error("помилка - (введіть позитивні значення для цін)")
     except ValueError:
-        st.error("Введіть коректні цифри для цін")
+        st.error("помилка - (введіть коректні цифри для цін)")
