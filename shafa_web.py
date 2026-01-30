@@ -1,7 +1,7 @@
 import streamlit as st
 
 def calculate_commission(price, category):
-    if category in ['Жіночий', 'Чоловічий', 'Дитячий', 'Аксесуари', 'КрасаТаЗдоров', 'ДляДому']:
+    if category in ['Жіночий', 'Чоловічий', 'Дитячий', 'Аксесуари', 'Краса Та Здоров', 'Для Дому']:
         if price <= 500:
             percent = 20
         elif price <= 1000:
@@ -19,29 +19,36 @@ def calculate_commission(price, category):
     commission = max(30, min(400, commission))
     return percent, commission
 
-st.title("Калькулятор комісії Shafa.ua")
+st.markdown('<div style="font-size: 2em; font-weight: bold; user-select: none;">Калькулятор комісії SHF</div>', unsafe_allow_html=True)
 
-category = st.selectbox("Оберіть категорію:", ['Жіночий', 'Чоловічий', 'Дитячий', 'Аксесуари', 'КрасаТаЗдоров', 'ДляДому', 'Інше'])
+category = st.radio("Категорія:", ['Жіночий', 'Чоловічий', 'Дитячий', 'Аксесуари', 'Краса Та Здоров', 'Для Дому', 'Інше'])
 
-price = st.number_input("Ціна товара (грн):", min_value=0.0, step=0.01)
+price_input = st.text_input("Ціна продажу:", value="")
 
-actual_price = st.number_input("Фактична ціна продажу (грн):", min_value=0.0, step=0.01)
+actual_price_input = st.text_input("Ціна зі знижкою:", value="")
 
 if st.button("Розрахувати"):
-    if price > 0 and actual_price > 0:
-        percent_price, comm_price = calculate_commission(price, category)
-        percent_actual, comm_actual = calculate_commission(actual_price, category)
-        
-        difference = comm_price - comm_actual
-        
-        st.write(f"**Для ціни товара ({price} грн):**")
-        st.write(f"Відсоток: {percent_price}%")
-        st.write(f"Сума списання: {comm_price:.2f} грн")
-        
-        st.write(f"**Для фактичної ціни ({actual_price} грн):**")
-        st.write(f"Відсоток: {percent_actual}%")
-        st.write(f"Сума списання: {comm_actual:.2f} грн")
-        
-        st.write(f"**Різниця для повернення: {difference:.2f} грн**")
-    else:
-        st.error("Введіть позитивні значення для цін")
+    try:
+        price = float(price_input)
+        actual_price = float(actual_price_input)
+        if price > 0 and actual_price > 0:
+            percent_price, comm_price = calculate_commission(price, category)
+            percent_actual, comm_actual = calculate_commission(actual_price, category)
+            
+            difference = comm_price - comm_actual
+            
+            st.markdown(f"""
+**Для ціни продажу ({price} грн):**
+- Відсоток: {percent_price}%
+- Сума списання: {comm_price:.2f} грн
+
+**Для ціни зі знижкою ({actual_price} грн):**
+- Відсоток: {percent_actual}%
+- Сума списання: {comm_actual:.2f} грн
+
+**Різниця для повернення: {difference:.2f} грн**
+""")
+        else:
+            st.error("Введіть позитивні значення для цін")
+    except ValueError:
+        st.error("Введіть коректні цифри для цін")
